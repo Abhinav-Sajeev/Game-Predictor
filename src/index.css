@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+
+@theme {
+  --color-primary: #00C896;
+  --color-secondary: #1A73E8;
+  --color-accent: #FFD700;
+  
+  --color-bg-dark: #0B1220;
+  --color-card-dark: #141C2F;
+  --color-text-primary-dark: #FFFFFF;
+  --color-text-secondary-dark: #A7B0C0;
+
+  --color-bg-light: #F4F6F9;
+  --color-card-light: #FFFFFF;
+  --color-text-primary-light: #0B1220;
+  --color-text-secondary-light: #64748B;
+  
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', system-ui, sans-serif;
+}
+
+/* Set custom variants for light/dark selectors */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: dark;
+}
+
+:root.light {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-primary-dark);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.light body {
+  background-color: var(--color-bg-light);
+  color: var(--color-text-primary-light);
+}
+
+/* Glassmorphism styling */
+.glass-panel {
+  background: rgba(20, 28, 47, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.light .glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 32px 0 rgba(148, 163, 184, 0.15);
+}
+
+/* Glow effects */
+.glow-primary {
+  box-shadow: 0 0 20px 0 rgba(0, 200, 150, 0.3);
+}
+
+.glow-secondary {
+  box-shadow: 0 0 20px 0 rgba(26, 115, 232, 0.3);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(11, 18, 32, 0.5);
+}
+
+.light ::-webkit-scrollbar-track {
+  background: rgba(244, 246, 249, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 200, 150, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 200, 150, 0.6);
+}
+
+/* Shimmer Keyframe */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, rgba(20, 28, 47, 0.6) 25%, rgba(30, 41, 59, 0.6) 50%, rgba(20, 28, 47, 0.6) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.light .shimmer {
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.6) 25%, rgba(241, 245, 249, 0.6) 50%, rgba(226, 232, 240, 0.6) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Confetti canvas overlay styling */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
