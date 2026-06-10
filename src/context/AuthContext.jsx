@@ -78,8 +78,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const registeredUser = await authService.register(name, email, password);
-      setUser(registeredUser);
-      triggerToast("Account registered successfully! Welcome! 🏆", "success");
+      triggerToast("Account registered successfully! Please sign in. 🏆", "success");
       return registeredUser;
     } catch (error) {
       setLoading(false);

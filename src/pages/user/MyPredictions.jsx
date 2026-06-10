@@ -31,7 +31,7 @@ const MyPredictions = () => {
       }
     };
     fetchPredictions();
-  }, [user]);
+  }, [user?.id]);
 
   const columns = [
     {

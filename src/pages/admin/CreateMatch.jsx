@@ -33,6 +33,10 @@ const AdminCreateMatch = () => {
       // 1. Send API request to the backend
       const apiResponse = await createMatchAPI(apiPayload);
 
+      if (apiResponse && apiResponse.success === false) {
+        throw new Error(apiResponse.message || "Failed to create match fixture");
+      }
+
       // 2. Extract match details returned from the backend (with fallback)
       const backendMatch = apiResponse.match || {};
       const matchId = backendMatch.id || backendMatch._id || `match-${Date.now()}`;

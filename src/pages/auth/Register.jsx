@@ -32,7 +32,7 @@ const Register = () => {
           </p>
         </div>
 
-        <RegisterForm onSuccess={() => navigate("/")} />
+        <RegisterForm onSuccess={() => navigate("/login")} />
 
         <div className="mt-6 text-center text-xs text-text-secondary-dark font-medium">
           Already have an account?{" "}

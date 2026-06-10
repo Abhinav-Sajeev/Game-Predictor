@@ -102,8 +102,8 @@ const RegisterForm = ({ onSuccess }) => {
         {...register("password", {
           required: "Password is required",
           minLength: {
-            value: 6,
-            message: "Password must be at least 6 characters"
+            value: 8,
+            message: "password must be in 8 characters"
           }
         })}
       />

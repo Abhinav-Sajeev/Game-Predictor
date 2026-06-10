@@ -45,7 +45,6 @@ export const authService = {
       avatar: null
     };
 
-    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(sessionUser));
     return sessionUser;
   },
 

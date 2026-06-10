@@ -20,7 +20,7 @@ const Leaderboard = () => {
       }
     };
     loadLeaderboard();
-  }, [fetchLeaderboard]);
+  }, []);
 
   const topThree = leaderboard.slice(0, 3);
   // Rest of the players

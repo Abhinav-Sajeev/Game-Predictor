@@ -48,6 +48,10 @@ export const matchService = {
     return matches.find(m => m.id === id) || null;
   },
 
+  createMatch: async (matchData) => {
+    return matchData;
+  },
+
   updateMatch: async (matchId, updatedData) => {
     const matches = await matchService.getMatches();
     const existingMatch = matches.find(m => m.id === matchId);

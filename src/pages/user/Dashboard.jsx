@@ -47,7 +47,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     loadDashboardData();
-  }, [user, fetchMatches, fetchLeaderboard, fetchUserRank]);
+  }, [user?.id]);
 
   // Handle score submission
   const handlePredictionSubmit = async (scoreA, scoreB) => {

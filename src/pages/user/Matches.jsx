@@ -11,6 +11,7 @@ import PredictionForm from "../../components/match/PredictionForm";
 const Matches = () => {
   const { user, triggerToast } = useAuth();
   const { matches, loading, fetchMatches } = useMatches();
+  const [predictions, setPredictions] = useState([]);
   
   // Predict Score Modal States
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -19,6 +20,10 @@ const Matches = () => {
   const loadMatchesData = async () => {
     try {
       await fetchMatches();
+      if (user && user.role !== "admin") {
+        const preds = await predictionService.getPredictionsByUserId(user.id);
+        setPredictions(preds);
+      }
     } catch (err) {
       triggerToast("Failed to load match listings", "error");
     }
@@ -26,7 +31,7 @@ const Matches = () => {
 
   useEffect(() => {
     loadMatchesData();
-  }, [user]);
+  }, [user?.id]);
 
   const handlePredictionSubmit = async (scoreA, scoreB) => {
     if (!user || !selectedMatch) return;
@@ -34,6 +39,7 @@ const Matches = () => {
       await predictionService.submitPrediction(user.id, selectedMatch.id, scoreA, scoreB);
       triggerToast("Prediction updated successfully! ⚽", "success");
       setIsPredictModalOpen(false);
+      await loadMatchesData();
     } catch (err) {
       triggerToast(err.message || "Failed to submit prediction", "error");
     }
@@ -64,7 +70,7 @@ const Matches = () => {
       {/* Fixtures grid listing */}
       <MatchList
         matches={matches}
-        predictions={[]}
+        predictions={predictions}
         loading={loading}
         onPredictClick={openPredictModal}
       />
@@ -86,6 +92,7 @@ const Matches = () => {
             
             <PredictionForm
               match={selectedMatch}
+              initialPrediction={predictions.find(p => p.matchId === selectedMatch.id)}
               onSubmitSuccess={handlePredictionSubmit}
             />
           </div>
