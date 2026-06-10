@@ -28,6 +28,14 @@ const PredictionForm = ({ match, initialPrediction, onSubmitSuccess }) => {
       const now = new Date();
       const closing = new Date(match.closingTime);
       setIsClosed(now > closing || match.status === "completed");
+
+      // Load prediction directly from match if available
+      if (match.predictedTeamAScore !== null && match.predictedTeamAScore !== undefined) {
+        setValue("scoreA", match.predictedTeamAScore);
+      }
+      if (match.predictedTeamBScore !== null && match.predictedTeamBScore !== undefined) {
+        setValue("scoreB", match.predictedTeamBScore);
+      }
     }
 
     if (initialPrediction) {
@@ -49,7 +57,15 @@ const PredictionForm = ({ match, initialPrediction, onSubmitSuccess }) => {
     }
   };
 
-  const hasPredicted = !!initialPrediction;
+  const hasPredicted = !!initialPrediction || (
+    match?.predictedTeamAScore !== null &&
+    match?.predictedTeamAScore !== undefined &&
+    match?.predictedTeamBScore !== null &&
+    match?.predictedTeamBScore !== undefined &&
+    match?.predictedWinner !== null &&
+    match?.predictedWinner !== undefined &&
+    match?.predictedWinner !== "null"
+  );
 
   return (
     <div className="w-full flex flex-col gap-4">

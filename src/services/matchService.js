@@ -33,7 +33,10 @@ export const matchService = {
         scoreB: b.actualTeamBScore,
         status: b.status || "upcoming",
         perfectPoints: parseInt(b.perfectScorePoint || 10, 10),
-        winnerPoints: parseInt(b.winnerOnlyPoint || 5, 10)
+        winnerPoints: parseInt(b.winnerOnlyPoint || 5, 10),
+        predictedTeamAScore: b.predictedTeamAScore !== undefined ? b.predictedTeamAScore : null,
+        predictedTeamBScore: b.predictedTeamBScore !== undefined ? b.predictedTeamBScore : null,
+        predictedWinner: b.predictedWinner !== undefined ? b.predictedWinner : null
       }));
     }
 

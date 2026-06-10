@@ -50,7 +50,7 @@ const AdminDashboard = () => {
           glow: false
         },
         {
-          label: "Result published",
+          label: "Prediction Entries",
           value: stats.totalPredictions,
           icon: <TrendingUp className="w-5 h-5 text-accent" />,
           subtext: `${stats.totalPredictions} prediction entries`,

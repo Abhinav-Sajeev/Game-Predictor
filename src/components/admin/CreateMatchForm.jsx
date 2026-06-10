@@ -203,7 +203,7 @@ const CreateMatchForm = ({ onSubmitSuccess }) => {
         type="submit"
         variant="primary"
         loading={loading}
-        className="py-3.5 uppercase tracking-wider font-bold text-sm mt-3"
+        className="w-full py-3.5 uppercase tracking-wider font-bold text-sm mt-3"
         endIcon={<PlusCircle className="w-4 h-4" />}
       >
         Add Match Fixture

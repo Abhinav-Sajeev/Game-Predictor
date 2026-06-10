@@ -20,41 +20,22 @@ const MatchCard = ({ match, prediction, onPredictClick }) => {
     return () => clearInterval(interval);
   }, [match]);
 
-  const hasPredicted = !!prediction;
+  const hasPredicted = 
+    (prediction !== undefined && prediction !== null) || (
+      match.predictedTeamAScore !== null &&
+      match.predictedTeamAScore !== undefined &&
+      match.predictedTeamBScore !== null &&
+      match.predictedTeamBScore !== undefined &&
+      match.predictedWinner !== null &&
+      match.predictedWinner !== undefined &&
+      match.predictedWinner !== "null"
+    );
   const isCompleted = match.status === "completed";
-
-  // Determine badge for points earned
-  const renderPointsBadge = () => {
-    if (!isCompleted || !prediction) return null;
-    const pts = prediction.pointsEarned;
-    
-    if (pts === 10) {
-      return (
-        <span className="flex items-center gap-1 px-2.5 py-1 bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold rounded-full uppercase tracking-wider font-display shadow-[0_0_8px_rgba(0,200,150,0.1)]">
-          <Award className="w-3 h-3 text-accent" />
-          +{pts} pts (Perfect)
-        </span>
-      );
-    } else if (pts === 5) {
-      return (
-        <span className="flex items-center gap-1 px-2.5 py-1 bg-secondary/20 border border-secondary/30 text-secondary text-[10px] font-bold rounded-full uppercase tracking-wider font-display">
-          <CheckCircle className="w-3 h-3" />
-          +{pts} pts (Winner)
-        </span>
-      );
-    } else {
-      return (
-        <span className="px-2.5 py-1 bg-white/5 border border-white/10 dark:border-white/10 text-text-secondary-dark/60 text-[10px] font-bold rounded-full uppercase tracking-wider font-display">
-          0 pts (Missed)
-        </span>
-      );
-    }
-  };
 
   return (
     <Card
       hoverEffect
-      glow={isCompleted && prediction?.pointsEarned === 10}
+      glow={isCompleted && (prediction?.pointsEarned === 10 || match.pointsEarned === 10)}
       glowColor="primary"
       className="flex flex-col h-full bg-card-dark text-white select-none border border-white/5"
     >
@@ -113,40 +94,30 @@ const MatchCard = ({ match, prediction, onPredictClick }) => {
       <div className="mt-auto pt-4 border-t border-white/5 flex flex-col gap-3">
         {/* Prediction summary */}
         {hasPredicted ? (
-          <div className="flex items-center justify-between bg-white/3 border border-white/5 rounded-xl p-3">
-            <div className="flex flex-col text-left">
-              <span className="text-[9px] uppercase font-bold tracking-wider text-text-secondary-dark">Your Prediction</span>
-              <span className="text-xs font-black font-display text-white light:text-bg-dark mt-0.5">
-                {prediction.predictScoreA} - {prediction.predictScoreB}
-              </span>
-            </div>
-            {isCompleted ? (
-              renderPointsBadge()
-            ) : (
-              <span className="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 text-[9px] uppercase font-bold rounded-lg tracking-wider font-display">
-                Locked
-              </span>
-            )}
+          <div className="flex items-center justify-center bg-white/3 border border-white/5 rounded-xl p-3 text-center">
+            <span className="text-xs font-bold text-primary tracking-wide">
+              {isCompleted ? "Prediction Submitted" : "Prediction submitted"}
+            </span>
           </div>
         ) : (
           isCompleted && (
             <div className="bg-white/3 border border-white/5 rounded-xl p-3 text-center text-xs text-text-secondary-dark font-semibold">
-              No prediction submitted
+              No Prediction Submitted
             </div>
           )
         )}
 
         {/* Prediction Actions */}
-        {!isCompleted && (
+        {!isCompleted && !hasPredicted && (
           <Button
             onClick={onPredictClick}
             disabled={isClosed}
-            variant={hasPredicted ? "outline" : "primary"}
+            variant="primary"
             size="sm"
             className="w-full py-2.5 font-bold uppercase tracking-wider text-xs"
             endIcon={isClosed ? <Lock className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
           >
-            {isClosed ? "Predictions Closed" : hasPredicted ? "Modify Score" : "Predict Score"}
+            {isClosed ? "Predictions Closed" : "Predict Score"}
           </Button>
         )}
       </div>

@@ -90,7 +90,7 @@ const AdminMatches = () => {
       transition={{ duration: 0.5 }}
       className="flex flex-col gap-6 w-full text-left"
     >
-      <div className="flex justify-between items-center border-b border-white/5 pb-4 select-none">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4 select-none">
         <div className="flex flex-col">
           <span className="text-[10px] text-text-secondary-dark uppercase font-bold tracking-widest leading-none">Administration</span>
           <h1 className="text-xl font-black font-display text-white light:text-bg-dark mt-1 flex items-center gap-2 uppercase tracking-wide">
@@ -98,8 +98,8 @@ const AdminMatches = () => {
             Match Fixtures
           </h1>
         </div>
-        <Link to="/admin/create-match">
-          <Button size="sm" variant="primary" className="text-xs uppercase tracking-wider font-bold" startIcon={<PlusCircle className="w-4 h-4" />}>
+        <Link to="/admin/create-match" className="w-full sm:w-auto">
+          <Button size="sm" variant="primary" className="w-full sm:w-auto text-xs uppercase tracking-wider font-bold" startIcon={<PlusCircle className="w-4 h-4" />}>
             Create Match
           </Button>
         </Link>
@@ -139,7 +139,7 @@ const AdminMatches = () => {
           size="md"
         >
           <form onSubmit={handleSubmit(handleEditSubmit)} className="flex flex-col gap-4 text-left text-white light:text-bg-dark">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Team A Name"
                 error={errors.teamA?.message}
@@ -152,7 +152,7 @@ const AdminMatches = () => {
               />
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Kickoff Date"
                 type="datetime-local"
@@ -167,7 +167,7 @@ const AdminMatches = () => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Perfect Points"
                 type="number"
