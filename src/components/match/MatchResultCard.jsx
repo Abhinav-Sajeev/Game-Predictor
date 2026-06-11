@@ -2,6 +2,7 @@ import React from "react";
 import { Check } from "lucide-react";
 import { formatShortDate } from "../../utils/formatDate";
 import Card from "../common/Card";
+import FlagDisplay from "../common/FlagDisplay";
 
 const MatchResultCard = ({ match }) => {
   const isDraw = match.scoreA === match.scoreB;
@@ -19,7 +20,7 @@ const MatchResultCard = ({ match }) => {
         {/* Scoreboard row */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3.5 flex-1 min-w-0">
-            <span className="text-xl filter drop-shadow-md select-none">{match.teamAFlag}</span>
+            <FlagDisplay emoji={match.teamAFlag} className="w-6 h-4 filter drop-shadow-md select-none" />
             <span className={`text-xs font-bold font-display truncate ${teamAWon ? "text-primary font-black" : "text-text-secondary-dark"}`}>
               {match.teamA}
             </span>
@@ -35,7 +36,7 @@ const MatchResultCard = ({ match }) => {
             <span className={`text-xs font-bold font-display truncate ${teamBWon ? "text-primary font-black" : "text-text-secondary-dark"}`}>
               {match.teamB}
             </span>
-            <span className="text-xl filter drop-shadow-md select-none">{match.teamBFlag}</span>
+            <FlagDisplay emoji={match.teamBFlag} className="w-6 h-4 filter drop-shadow-md select-none" />
           </div>
         </div>
       </div>

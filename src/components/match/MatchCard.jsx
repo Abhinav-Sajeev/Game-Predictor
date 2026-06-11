@@ -4,6 +4,7 @@ import { formatMatchDate } from "../../utils/formatDate";
 import { cn } from "../../utils/helpers";
 import Card from "../common/Card";
 import Button from "../common/Button";
+import FlagDisplay from "../common/FlagDisplay";
 import MatchCountdown from "./MatchCountdown";
 
 const MatchCard = ({ match, prediction, onPredictClick }) => {
@@ -56,9 +57,7 @@ const MatchCard = ({ match, prediction, onPredictClick }) => {
       <div className="flex items-center justify-between py-4 relative">
         {/* Team A */}
         <div className="flex flex-col items-center gap-2.5 flex-1 min-w-0">
-          <span className="text-3xl md:text-4xl shadow-sm filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] animate-pulse">
-            {match.teamAFlag}
-          </span>
+          <FlagDisplay emoji={match.teamAFlag} className="w-10 h-7 md:w-12 md:h-8 shadow-sm filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] animate-pulse" />
           <span className="text-sm font-extrabold text-white light:text-bg-dark font-display text-center truncate w-full uppercase tracking-wide">
             {match.teamA}
           </span>
@@ -81,9 +80,7 @@ const MatchCard = ({ match, prediction, onPredictClick }) => {
 
         {/* Team B */}
         <div className="flex flex-col items-center gap-2.5 flex-1 min-w-0">
-          <span className="text-3xl md:text-4xl shadow-sm filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] animate-pulse">
-            {match.teamBFlag}
-          </span>
+          <FlagDisplay emoji={match.teamBFlag} className="w-10 h-7 md:w-12 md:h-8 shadow-sm filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] animate-pulse" />
           <span className="text-sm font-extrabold text-white light:text-bg-dark font-display text-center truncate w-full uppercase tracking-wide">
             {match.teamB}
           </span>

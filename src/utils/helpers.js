@@ -1,6 +1,7 @@
 // Helper functions for scoring, calculations, and general utilities
 
 import { POINTS_CONFIG } from "./constants";
+import flags from "country-flag-emoji-json";
 
 /**
  * Calculates prediction points based on predicted and actual scores
@@ -49,38 +50,19 @@ export const safeParse = (data, fallback = null) => {
   }
 };
 
-const flagPresets = {
-  "Argentina": "🇦🇷",
-  "France": "🇫🇷",
-  "Brazil": "🇧🇷",
-  "Germany": "🇩🇪",
-  "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-  "Spain": "🇪🇸",
-  "Portugal": "🇵🇹",
-  "Italy": "🇮🇹",
-  "Netherlands": "🇳🇱",
-  "Belgium": "🇧🇪",
-  "Uruguay": "🇺🇾",
-  "Senegal": "🇸🇳",
-  "Japan": "🇯🇵",
-  "Croatia": "🇭🇷",
-  "Morocco": "🇲🇦",
-  "United States": "🇺🇸"
-};
-
 /**
  * Resolves a country/team name to a matching flag emoji
  */
 export const getTeamFlag = (name) => {
   if (!name) return "⚽";
-  const normalized = name.trim();
-  const found = Object.keys(flagPresets).find(
-    k => k.toLowerCase() === normalized.toLowerCase()
-  );
-  if (found) return flagPresets[found];
+  const normalized = name.trim().toLowerCase();
   
-  const partial = Object.keys(flagPresets).find(
-    k => normalized.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(normalized.toLowerCase())
+  const found = flags.find(f => f.name.toLowerCase() === normalized);
+  if (found) return found.emoji;
+  
+  const partial = flags.find(f => 
+    f.name.toLowerCase().includes(normalized) || 
+    normalized.includes(f.name.toLowerCase())
   );
-  return partial ? flagPresets[partial] : "⚽";
+  return partial ? partial.emoji : "⚽";
 };

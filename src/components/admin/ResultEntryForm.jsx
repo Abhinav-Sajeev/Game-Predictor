@@ -4,6 +4,7 @@ import { CheckCircle, Filter, CalendarDays, CheckCheck, Clock } from "lucide-rea
 import { cn } from "../../utils/helpers";
 import { formatMatchDate } from "../../utils/formatDate";
 import Button from "../common/Button";
+import FlagDisplay from "../common/FlagDisplay";
 
 const STATUS_FILTERS = [
   { label: "All",       value: "all" },
@@ -173,11 +174,11 @@ const ResultEntryForm = ({ matches = [], onSubmitSuccess }) => {
 
                     <div className="flex flex-col gap-0.5 min-w-0">
                       <div className="flex items-center gap-2 font-bold text-sm text-white font-display truncate">
-                        <span className="text-base">{m.teamAFlag}</span>
+                        <FlagDisplay emoji={m.teamAFlag} className="w-5 h-3.5" />
                         <span>{m.teamA}</span>
                         <span className="text-text-secondary-dark/50 text-[10px] font-black">VS</span>
                         <span>{m.teamB}</span>
-                        <span className="text-base">{m.teamBFlag}</span>
+                        <FlagDisplay emoji={m.teamBFlag} className="w-5 h-3.5" />
                       </div>
                       <span className="text-[10px] text-text-secondary-dark font-medium">
                         {formatMatchDate(m.dateTime)}
@@ -211,7 +212,7 @@ const ResultEntryForm = ({ matches = [], onSubmitSuccess }) => {
           <div className="flex items-center justify-center gap-6 py-2">
             {/* Team A */}
             <div className="flex flex-col items-center gap-2">
-              <span className="text-3xl filter drop-shadow-md select-none">{selectedMatch.teamAFlag}</span>
+              <FlagDisplay emoji={selectedMatch.teamAFlag} className="w-10 h-7 md:w-12 md:h-8 filter drop-shadow-md select-none" />
               <span className="text-[10px] font-bold text-text-secondary-dark uppercase tracking-wider text-center max-w-[90px] truncate">
                 {selectedMatch.teamA}
               </span>
@@ -233,7 +234,7 @@ const ResultEntryForm = ({ matches = [], onSubmitSuccess }) => {
 
             {/* Team B */}
             <div className="flex flex-col items-center gap-2">
-              <span className="text-3xl filter drop-shadow-md select-none">{selectedMatch.teamBFlag}</span>
+              <FlagDisplay emoji={selectedMatch.teamBFlag} className="w-10 h-7 md:w-12 md:h-8 filter drop-shadow-md select-none" />
               <span className="text-[10px] font-bold text-text-secondary-dark uppercase tracking-wider text-center max-w-[90px] truncate">
                 {selectedMatch.teamB}
               </span>

@@ -4,6 +4,7 @@ import { formatMatchDate } from "../../utils/formatDate";
 import { cn } from "../../utils/helpers";
 import Table from "../common/Table";
 import Button from "../common/Button";
+import FlagDisplay from "../common/FlagDisplay";
 
 const MatchManagement = ({ matches = [], onEdit, onDelete, loading = false }) => {
   const columns = [
@@ -18,11 +19,11 @@ const MatchManagement = ({ matches = [], onEdit, onDelete, loading = false }) =>
       className: "pl-4",
       render: (row) => (
         <div className="flex items-center gap-3">
-          <span className="text-xl filter drop-shadow-sm select-none">{row.teamAFlag}</span>
+          <FlagDisplay emoji={row.teamAFlag} className="w-6 h-4 filter drop-shadow-sm select-none" />
           <span className="font-bold text-sm text-white light:text-bg-dark">{row.teamA}</span>
           <span className="text-xs text-text-secondary-dark font-black font-display px-1.5 py-0.5 rounded bg-white/5 select-none">VS</span>
           <span className="font-bold text-sm text-white light:text-bg-dark">{row.teamB}</span>
-          <span className="text-xl filter drop-shadow-sm select-none">{row.teamBFlag}</span>
+          <FlagDisplay emoji={row.teamBFlag} className="w-6 h-4 filter drop-shadow-sm select-none" />
         </div>
       )
     },
@@ -108,11 +109,11 @@ const MatchManagement = ({ matches = [], onEdit, onDelete, loading = false }) =>
         </div>
 
         <div className="flex items-center justify-center gap-3 py-1 font-display font-extrabold text-sm">
-          <span>{match.teamAFlag}</span>
+          <FlagDisplay emoji={match.teamAFlag} className="w-5 h-3.5" />
           <span className="text-white light:text-bg-dark">{match.teamA}</span>
           <span className="text-text-secondary-dark/40 font-bold px-1 select-none">VS</span>
           <span className="text-white light:text-bg-dark">{match.teamB}</span>
-          <span>{match.teamBFlag}</span>
+          <FlagDisplay emoji={match.teamBFlag} className="w-5 h-3.5" />
         </div>
 
         <div className="flex items-center justify-between pt-3 border-t border-white/5 text-xs">

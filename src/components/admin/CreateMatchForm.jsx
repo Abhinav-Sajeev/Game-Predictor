@@ -1,27 +1,80 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { PlusCircle, Calendar, Percent, ShieldCheck } from "lucide-react";
+import Select from "react-select";
+import flags from "country-flag-emoji-json";
 import Input from "../common/Input";
 import Button from "../common/Button";
 
-const flagPresets = [
-  { country: "Argentina", flag: "🇦🇷" },
-  { country: "France", flag: "🇫🇷" },
-  { country: "Brazil", flag: "🇧🇷" },
-  { country: "Germany", flag: "🇩🇪" },
-  { country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
-  { country: "Spain", flag: "🇪🇸" },
-  { country: "Portugal", flag: "🇵🇹" },
-  { country: "Italy", flag: "🇮🇹" },
-  { country: "Netherlands", flag: "🇳🇱" },
-  { country: "Belgium", flag: "🇧🇪" },
-  { country: "Uruguay", flag: "🇺🇾" },
-  { country: "Senegal", flag: "🇸🇳" },
-  { country: "Japan", flag: "🇯🇵" },
-  { country: "Croatia", flag: "🇭🇷" },
-  { country: "Morocco", flag: "🇲🇦" },
-  { country: "United States", flag: "🇺🇸" }
+const fifaCountries = [
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
+  "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia",
+  "Bosnia & Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon",
+  "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo - Brazzaville", "Congo - Kinshasa",
+  "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia", "Côte d’Ivoire", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
+  "Ecuador", "Egypt", "El Salvador", "England", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji",
+  "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea",
+  "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR China", "Hungary", "Iceland", "India", "Indonesia", "Iran",
+  "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kosovo", "Kuwait", "Kyrgyzstan",
+  "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macao SAR China",
+  "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Mauritania", "Mauritius", "Mexico", "Moldova", "Mongolia",
+  "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar (Burma)", "Namibia", "Nepal", "Netherlands", "New Zealand",
+  "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Northern Ireland", "Norway", "Oman", "Pakistan",
+  "Palestinian Territories", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico",
+  "Qatar", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Scotland", "Senegal", "Serbia", "Seychelles",
+  "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan",
+  "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "São Tomé & Príncipe", "Tajikistan", "Tanzania",
+  "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad & Tobago", "Tunisia", "Turkey", "Turkmenistan", "Uganda", "Ukraine",
+  "United Arab Emirates", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Wales", "Yemen",
+  "Zambia", "Zimbabwe"
 ];
+
+const countryOptions = flags
+  .filter(f => fifaCountries.includes(f.name))
+  .map(f => ({
+    value: f.emoji,
+    label: f.name,
+    image: f.image,
+    countryName: f.name
+  }));
+
+const selectStyles = {
+  control: (base, state) => ({
+    ...base,
+    backgroundColor: "rgb(30, 41, 59)", // bg-card-dark roughly
+    borderColor: state.isFocused ? "#3b82f6" : "rgba(255, 255, 255, 0.1)",
+    borderRadius: "0.75rem", // rounded-xl
+    padding: "0.25rem",
+    boxShadow: state.isFocused ? "0 0 0 1px #3b82f6" : "none",
+    "&:hover": {
+      borderColor: state.isFocused ? "#3b82f6" : "rgba(255, 255, 255, 0.2)"
+    }
+  }),
+  menu: (base) => ({
+    ...base,
+    backgroundColor: "rgb(30, 41, 59)",
+    borderRadius: "0.75rem",
+    border: "1px solid rgba(255, 255, 255, 0.1)",
+    zIndex: 50
+  }),
+  option: (base, state) => ({
+    ...base,
+    backgroundColor: state.isFocused ? "rgba(255, 255, 255, 0.1)" : "transparent",
+    color: "white",
+    cursor: "pointer",
+    "&:active": {
+      backgroundColor: "rgba(255, 255, 255, 0.15)"
+    }
+  }),
+  singleValue: (base) => ({
+    ...base,
+    color: "white"
+  }),
+  input: (base) => ({
+    ...base,
+    color: "white"
+  })
+};
 
 const CreateMatchForm = ({ onSubmitSuccess }) => {
   const [loading, setLoading] = useState(false);
@@ -31,7 +84,7 @@ const CreateMatchForm = ({ onSubmitSuccess }) => {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     reset,
     formState: { errors }
   } = useForm({
@@ -47,9 +100,6 @@ const CreateMatchForm = ({ onSubmitSuccess }) => {
     }
   });
 
-  const selectedTeamAFlag = watch("teamAFlag");
-  const selectedTeamBFlag = watch("teamBFlag");
-
   const onSubmit = async (data) => {
     setLoading(true);
     setServerError("");
@@ -63,11 +113,11 @@ const CreateMatchForm = ({ onSubmitSuccess }) => {
       } else if (data.predictionClosingTime) {
         data.predictionClosingTime = new Date(data.predictionClosingTime).toISOString();
       }
-      
+
       if (data.matchDateTime) {
         data.matchDateTime = new Date(data.matchDateTime).toISOString();
       }
-      
+
       await onSubmitSuccess(data);
       reset();
     } catch (err) {
@@ -97,21 +147,34 @@ const CreateMatchForm = ({ onSubmitSuccess }) => {
         </div>
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold uppercase tracking-wider text-text-secondary-dark font-display">
-            Team A Flag Emoji
+            Team A Country & Flag
           </label>
-          <div className="flex items-center gap-2">
-            <span className="text-2xl p-2.5 bg-card-dark/60 border border-white/10 rounded-xl select-none">{selectedTeamAFlag}</span>
-            <select
-              className="flex-1 bg-card-dark border border-white/10 dark:border-white/10 rounded-xl p-3 text-sm text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none"
-              {...register("teamAFlag")}
-            >
-              {flagPresets.map((p, idx) => (
-                <option key={idx} value={p.flag}>
-                  {p.flag} {p.country}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Controller
+            name="teamAFlag"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={countryOptions}
+                styles={selectStyles}
+                classNamePrefix="react-select"
+                placeholder="Search country..."
+                formatOptionLabel={(option) => (
+                  <div className="flex items-center gap-2">
+                    <img src={option.image} alt={option.label} className="w-6 h-4 object-cover rounded-sm shadow-[0_0_2px_rgba(0,0,0,0.5)]" />
+                    <span>{option.label}</span>
+                  </div>
+                )}
+                value={countryOptions.find(c => c.value === field.value) || null}
+                onChange={(selectedOption) => {
+                  field.onChange(selectedOption ? selectedOption.value : "");
+                  if (selectedOption) {
+                    setValue("teamA", selectedOption.countryName);
+                  }
+                }}
+              />
+            )}
+          />
         </div>
       </div>
 
@@ -127,21 +190,34 @@ const CreateMatchForm = ({ onSubmitSuccess }) => {
         </div>
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold uppercase tracking-wider text-text-secondary-dark font-display">
-            Team B Flag Emoji
+            Team B Country & Flag
           </label>
-          <div className="flex items-center gap-2">
-            <span className="text-2xl p-2.5 bg-card-dark/60 border border-white/10 rounded-xl select-none">{selectedTeamBFlag}</span>
-            <select
-              className="flex-1 bg-card-dark border border-white/10 dark:border-white/10 rounded-xl p-3 text-sm text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none"
-              {...register("teamBFlag")}
-            >
-              {flagPresets.map((p, idx) => (
-                <option key={idx} value={p.flag}>
-                  {p.flag} {p.country}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Controller
+            name="teamBFlag"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={countryOptions}
+                styles={selectStyles}
+                classNamePrefix="react-select"
+                placeholder="Search country..."
+                formatOptionLabel={(option) => (
+                  <div className="flex items-center gap-2">
+                    <img src={option.image} alt={option.label} className="w-6 h-4 object-cover rounded-sm shadow-[0_0_2px_rgba(0,0,0,0.5)]" />
+                    <span>{option.label}</span>
+                  </div>
+                )}
+                value={countryOptions.find(c => c.value === field.value) || null}
+                onChange={(selectedOption) => {
+                  field.onChange(selectedOption ? selectedOption.value : "");
+                  if (selectedOption) {
+                    setValue("teamB", selectedOption.countryName);
+                  }
+                }}
+              />
+            )}
+          />
         </div>
       </div>
 
