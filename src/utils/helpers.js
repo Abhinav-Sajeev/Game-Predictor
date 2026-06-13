@@ -50,12 +50,28 @@ export const safeParse = (data, fallback = null) => {
   }
 };
 
+const countryAliases = {
+  "ivory coast": "Côte d’Ivoire",
+  "cote d'ivoire": "Côte d’Ivoire",
+  "cote d’ivoire": "Côte d’Ivoire",
+  "cabo verde": "Cape Verde",
+  "dr congo": "Congo - Kinshasa",
+  "congo dr": "Congo - Kinshasa",
+  "democratic republic of the congo": "Congo - Kinshasa",
+  "democratic republic of congo": "Congo - Kinshasa",
+  "curacao": "Curaçao"
+};
+
 /**
  * Resolves a country/team name to a matching flag emoji
  */
 export const getTeamFlag = (name) => {
   if (!name) return "⚽";
-  const normalized = name.trim().toLowerCase();
+  let normalized = name.trim().toLowerCase();
+  
+  if (countryAliases[normalized]) {
+    normalized = countryAliases[normalized].toLowerCase();
+  }
   
   const found = flags.find(f => f.name.toLowerCase() === normalized);
   if (found) return found.emoji;
@@ -66,3 +82,4 @@ export const getTeamFlag = (name) => {
   );
   return partial ? partial.emoji : "⚽";
 };
+

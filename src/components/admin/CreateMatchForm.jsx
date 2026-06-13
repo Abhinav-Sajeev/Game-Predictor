@@ -10,8 +10,8 @@ const fifaCountries = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
   "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia",
   "Bosnia & Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon",
-  "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo - Brazzaville", "Congo - Kinshasa",
-  "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia", "Côte d’Ivoire", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
+  "Canada", "Cape Verde", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo - Brazzaville", "Congo - Kinshasa",
+  "Costa Rica", "Croatia", "Cuba", "Curaçao", "Cyprus", "Czechia", "Côte d’Ivoire", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
   "Ecuador", "Egypt", "El Salvador", "England", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji",
   "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea",
   "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR China", "Hungary", "Iceland", "India", "Indonesia", "Iran",
@@ -29,14 +29,58 @@ const fifaCountries = [
   "Zambia", "Zimbabwe"
 ];
 
-const countryOptions = flags
-  .filter(f => fifaCountries.includes(f.name))
-  .map(f => ({
-    value: f.emoji,
-    label: f.name,
-    image: f.image,
-    countryName: f.name
-  }));
+const countryOptions = [];
+flags.forEach(f => {
+  if (fifaCountries.includes(f.name)) {
+    // Add official name
+    countryOptions.push({
+      value: f.emoji,
+      label: f.name,
+      image: f.image,
+      countryName: f.name
+    });
+    
+    // Add aliases
+    if (f.name === "Côte d’Ivoire") {
+      countryOptions.push({
+        value: f.emoji,
+        label: "Ivory Coast",
+        image: f.image,
+        countryName: "Ivory Coast"
+      });
+    } else if (f.name === "Cape Verde") {
+      countryOptions.push({
+        value: f.emoji,
+        label: "Cabo Verde",
+        image: f.image,
+        countryName: "Cabo Verde"
+      });
+    } else if (f.name === "Congo - Kinshasa") {
+      countryOptions.push({
+        value: f.emoji,
+        label: "DR Congo",
+        image: f.image,
+        countryName: "DR Congo"
+      });
+      countryOptions.push({
+        value: f.emoji,
+        label: "Democratic Republic of the Congo",
+        image: f.image,
+        countryName: "Democratic Republic of the Congo"
+      });
+    } else if (f.name === "Curaçao") {
+      countryOptions.push({
+        value: f.emoji,
+        label: "Curacao",
+        image: f.image,
+        countryName: "Curacao"
+      });
+    }
+  }
+});
+
+// Sort the options alphabetically by label
+countryOptions.sort((a, b) => a.label.localeCompare(b.label));
 
 const selectStyles = {
   control: (base, state) => ({
