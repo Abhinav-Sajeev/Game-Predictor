@@ -33,10 +33,10 @@ const Matches = () => {
     loadMatchesData();
   }, [user?.id]);
 
-  const handlePredictionSubmit = async (scoreA, scoreB) => {
+  const handlePredictionSubmit = async (scoreA, scoreB, penaltyWinner = null) => {
     if (!user || !selectedMatch) return;
     try {
-      await predictionService.submitPrediction(user.id, selectedMatch.id, scoreA, scoreB);
+      await predictionService.submitPrediction(user.id, selectedMatch.id, scoreA, scoreB, penaltyWinner);
       triggerToast("Prediction updated successfully! ⚽", "success");
       setIsPredictModalOpen(false);
       await loadMatchesData();

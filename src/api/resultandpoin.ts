@@ -6,6 +6,7 @@ const API_BASE_URL = `${import.meta.env.VITE_FIFA_API_BASE_URL || "http://localh
 export interface ResultPayload {
   actualTeamAScore: number;
   actualTeamBScore: number;
+  penaltyWinnerTeam?: string | null;
 }
 
 export interface ResultResponse {
@@ -21,6 +22,7 @@ export interface ResultResponse {
     winnerOnlyPoint: number;
     actualTeamAScore: number;
     actualTeamBScore: number;
+    penaltyWinnerTeam?: string | null;
     actualWinner: string | null;
     status: string;
   };
@@ -32,13 +34,11 @@ export interface ResultResponse {
  * @param payload - Object containing final scores
  */
 export const submitResultAPI = async (matchId: string, payload: ResultPayload): Promise<ResultResponse> => {
-  const token = localStorage.getItem("fifa_token");
+  const token = localStorage.getItem("fifa_token") || "";
   const headers: Record<string, string> = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
   };
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
 
   const response = await axios.post<ResultResponse>(
     `${API_BASE_URL}/${matchId}/result`,

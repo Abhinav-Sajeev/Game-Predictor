@@ -66,11 +66,11 @@ export const useMatches = () => {
     }
   };
 
-  const submitResult = async (matchId, scoreA, scoreB) => {
+  const submitResult = async (matchId, scoreA, scoreB, penaltyWinnerTeam = null) => {
     setLoading(true);
     setError(null);
     try {
-      const updatedMatch = await matchService.submitResult(matchId, scoreA, scoreB);
+      const updatedMatch = await matchService.submitResult(matchId, scoreA, scoreB, penaltyWinnerTeam);
       setMatches(prev => prev.map(m => m.id === matchId ? updatedMatch : m));
       return updatedMatch;
     } catch (err) {

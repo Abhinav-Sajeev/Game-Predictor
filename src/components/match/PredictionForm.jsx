@@ -3,17 +3,20 @@ import { useForm } from "react-hook-form";
 import { Send, Edit3, ShieldAlert } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import Button from "../common/Button";
+import { cn } from "../../utils/helpers";
 
 const PredictionForm = ({ match, initialPrediction, onSubmitSuccess }) => {
   const { user } = useAuth();
   const [isClosed, setIsClosed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [penaltyWinner, setPenaltyWinner] = useState("");
 
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors }
   } = useForm({
     defaultValues: {
@@ -21,6 +24,17 @@ const PredictionForm = ({ match, initialPrediction, onSubmitSuccess }) => {
       scoreB: ""
     }
   });
+
+  const scoreAVal = watch("scoreA");
+  const scoreBVal = watch("scoreB");
+  const isDraw = scoreAVal !== "" && scoreBVal !== "" && scoreAVal !== undefined && scoreBVal !== undefined && parseInt(scoreAVal, 10) === parseInt(scoreBVal, 10);
+
+  // Clear penalty winner if it is no longer a draw
+  useEffect(() => {
+    if (!isDraw) {
+      setPenaltyWinner("");
+    }
+  }, [isDraw]);
 
   // Check closing time and load initial predictions if any
   useEffect(() => {
@@ -41,15 +55,22 @@ const PredictionForm = ({ match, initialPrediction, onSubmitSuccess }) => {
     if (initialPrediction) {
       setValue("scoreA", initialPrediction.predictScoreA);
       setValue("scoreB", initialPrediction.predictScoreB);
+      if (initialPrediction.penaltyWinner) {
+        setPenaltyWinner(initialPrediction.penaltyWinner);
+      }
     }
   }, [match, initialPrediction, setValue]);
 
   const onSubmit = async (data) => {
     if (isClosed) return;
+    if (isDraw && !penaltyWinner) {
+      setServerError("Please select a penalty shootout winner.");
+      return;
+    }
     setLoading(true);
     setServerError("");
     try {
-      await onSubmitSuccess(data.scoreA, data.scoreB);
+      await onSubmitSuccess(data.scoreA, data.scoreB, isDraw ? penaltyWinner : null);
     } catch (err) {
       setServerError(err.message || "Failed to submit prediction.");
     } finally {
@@ -128,6 +149,48 @@ const PredictionForm = ({ match, initialPrediction, onSubmitSuccess }) => {
             />
           </div>
         </div>
+
+        {/* Penalty Shootout Selector for Draw predictions */}
+        {isDraw && (
+          <div className="flex flex-col gap-3 p-4 bg-white/5 border border-white/10 rounded-2xl animate-fade-in text-left">
+            <span className="text-[11px] font-bold text-text-secondary-dark uppercase tracking-wider block text-center">
+              Select Penalty Shootout Winner
+            </span>
+            <div className="flex gap-4">
+              <button
+                type="button"
+                disabled={isClosed}
+                onClick={() => setPenaltyWinner(match.teamA)}
+                className={cn(
+                  "flex-1 py-2.5 px-3 rounded-xl border text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer",
+                  penaltyWinner === match.teamA
+                    ? "bg-primary/20 border-primary text-primary shadow-[0_0_12px_rgba(0,200,150,0.15)]"
+                    : "bg-card-dark/60 border-white/10 text-white hover:bg-white/5 hover:border-white/20"
+                )}
+              >
+                {match.teamAFlag} {match.teamA}
+              </button>
+              <button
+                type="button"
+                disabled={isClosed}
+                onClick={() => setPenaltyWinner(match.teamB)}
+                className={cn(
+                  "flex-1 py-2.5 px-3 rounded-xl border text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer",
+                  penaltyWinner === match.teamB
+                    ? "bg-primary/20 border-primary text-primary shadow-[0_0_12px_rgba(0,200,150,0.15)]"
+                    : "bg-card-dark/60 border-white/10 text-white hover:bg-white/5 hover:border-white/20"
+                )}
+              >
+                {match.teamB} {match.teamBFlag}
+              </button>
+            </div>
+            {!penaltyWinner && (
+              <span className="text-[10px] text-amber-500 font-semibold text-center mt-1 animate-pulse block">
+                Please select a penalty shootout winner.
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Validation Errors */}
         {(errors.scoreA || errors.scoreB) && (

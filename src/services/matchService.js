@@ -103,19 +103,20 @@ export const matchService = {
     return true;
   },
 
-  submitResult: async (matchId, scoreA, scoreB) => {
+  submitResult: async (matchId, scoreA, scoreB, penaltyWinnerTeam = null) => {
     const parsedScoreA = parseInt(scoreA, 10);
     const parsedScoreB = parseInt(scoreB, 10);
 
     try {
       await submitResultAPI(matchId, {
         actualTeamAScore: parsedScoreA,
-        actualTeamBScore: parsedScoreB
+        actualTeamBScore: parsedScoreB,
+        ...(parsedScoreA === parsedScoreB && penaltyWinnerTeam ? { penaltyWinnerTeam } : {})
       });
     } catch (err) {
       throw new Error(err.response?.data?.message || err.message || "Failed to submit result on backend");
     }
 
-    return { matchId, scoreA: parsedScoreA, scoreB: parsedScoreB, status: "completed" };
+    return { matchId, scoreA: parsedScoreA, scoreB: parsedScoreB, penaltyWinnerTeam, status: "completed" };
   }
 };

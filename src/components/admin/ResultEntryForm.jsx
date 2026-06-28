@@ -25,22 +25,38 @@ const ResultEntryForm = ({ matches = [], onSubmitSuccess }) => {
     ? sortedMatches
     : sortedMatches.filter(m => (m.status || "").toLowerCase() === statusFilter);
 
+  const [penaltyWinnerTeam, setPenaltyWinnerTeam] = useState("");
+
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     reset,
     formState: { errors }
   } = useForm({ defaultValues: { scoreA: "", scoreB: "" } });
+
+  const scoreAVal = watch("scoreA");
+  const scoreBVal = watch("scoreB");
+  const isDraw = scoreAVal !== "" && scoreBVal !== "" && scoreAVal !== undefined && scoreBVal !== undefined && parseInt(scoreAVal, 10) === parseInt(scoreBVal, 10);
+
+  // Clear penalty winner if it is no longer a draw
+  useEffect(() => {
+    if (!isDraw) {
+      setPenaltyWinnerTeam("");
+    }
+  }, [isDraw]);
 
   // Pre-fill scores when a match is selected
   useEffect(() => {
     if (selectedMatch) {
       setValue("scoreA", selectedMatch.scoreA !== null ? selectedMatch.scoreA : "");
       setValue("scoreB", selectedMatch.scoreB !== null ? selectedMatch.scoreB : "");
+      setPenaltyWinnerTeam(selectedMatch.penaltyWinnerTeam || "");
     } else {
       setValue("scoreA", "");
       setValue("scoreB", "");
+      setPenaltyWinnerTeam("");
     }
   }, [selectedMatch, setValue]);
 
@@ -51,10 +67,14 @@ const ResultEntryForm = ({ matches = [], onSubmitSuccess }) => {
 
   const onSubmit = async (data) => {
     if (!selectedMatch) return;
+    if (isDraw && !penaltyWinnerTeam) {
+      setServerError("Please select a penalty shootout winner.");
+      return;
+    }
     setLoading(true);
     setServerError("");
     try {
-      await onSubmitSuccess(selectedMatch.id, data.scoreA, data.scoreB);
+      await onSubmitSuccess(selectedMatch.id, data.scoreA, data.scoreB, isDraw ? penaltyWinnerTeam : null);
       reset();
       setSelectedMatch(null);
     } catch (err) {
@@ -251,6 +271,46 @@ const ResultEntryForm = ({ matches = [], onSubmitSuccess }) => {
               />
             </div>
           </div>
+
+          {/* Penalty Shootout Selector for Draw results */}
+          {isDraw && (
+            <div className="flex flex-col gap-3 p-4 bg-white/5 border border-white/10 rounded-2xl animate-fade-in text-left">
+              <span className="text-[11px] font-bold text-text-secondary-dark uppercase tracking-wider block text-center">
+                Select Penalty Shootout Winner
+              </span>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setPenaltyWinnerTeam(selectedMatch.teamA)}
+                  className={cn(
+                    "flex-1 py-2.5 px-3 rounded-xl border text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer",
+                    penaltyWinnerTeam === selectedMatch.teamA
+                      ? "bg-primary/20 border-primary text-primary shadow-[0_0_12px_rgba(0,200,150,0.15)]"
+                      : "bg-card-dark/60 border-white/10 text-white hover:bg-white/5 hover:border-white/20"
+                  )}
+                >
+                  {selectedMatch.teamAFlag} {selectedMatch.teamA}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPenaltyWinnerTeam(selectedMatch.teamB)}
+                  className={cn(
+                    "flex-1 py-2.5 px-3 rounded-xl border text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer",
+                    penaltyWinnerTeam === selectedMatch.teamB
+                      ? "bg-primary/20 border-primary text-primary shadow-[0_0_12px_rgba(0,200,150,0.15)]"
+                      : "bg-card-dark/60 border-white/10 text-white hover:bg-white/5 hover:border-white/20"
+                  )}
+                >
+                  {selectedMatch.teamB} {selectedMatch.teamBFlag}
+                </button>
+              </div>
+              {!penaltyWinnerTeam && (
+                <span className="text-[10px] text-amber-500 font-semibold text-center mt-1 animate-pulse block">
+                  Please select a penalty shootout winner.
+                </span>
+              )}
+            </div>
+          )}
 
           {(errors.scoreA || errors.scoreB) && (
             <div className="text-center text-xs text-red-500 font-semibold leading-none animate-pulse">

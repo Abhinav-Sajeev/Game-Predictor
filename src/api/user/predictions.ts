@@ -7,6 +7,7 @@ export interface PredictionPayload {
   matchId: string;
   predictedTeamAScore: number;
   predictedTeamBScore: number;
+  penaltyWinner?: string | null;
 }
 
 export interface PredictionResponse {
@@ -19,6 +20,7 @@ export interface PredictionResponse {
     matchId: string;
     predictedTeamAScore: number;
     predictedTeamBScore: number;
+    penaltyWinner?: string | null;
     pointsEarned?: number | null;
     status?: string;
   };
@@ -29,13 +31,11 @@ export interface PredictionResponse {
  * @param payload - The prediction score details
  */
 export const submitPredictionAPI = async (payload: PredictionPayload): Promise<PredictionResponse> => {
-  const token = localStorage.getItem("fifa_token");
+  const token = localStorage.getItem("fifa_token") || "";
   const headers: Record<string, string> = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
   };
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
 
   const response = await axios.post<PredictionResponse>(
     API_BASE_URL,

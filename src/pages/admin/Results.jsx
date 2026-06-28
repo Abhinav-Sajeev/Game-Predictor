@@ -16,9 +16,9 @@ const AdminResults = () => {
     fetchMatches();
   }, []);
 
-  const handlePublishSuccess = async (matchId, scoreA, scoreB) => {
+  const handlePublishSuccess = async (matchId, scoreA, scoreB, penaltyWinnerTeam = null) => {
     try {
-      await submitResult(matchId, scoreA, scoreB);
+      await submitResult(matchId, scoreA, scoreB, penaltyWinnerTeam);
       
       // Fire confetti celebration
       confetti({

@@ -37,6 +37,7 @@ export const predictionService = {
         matchId: matchIdStr,
         predictScoreA: p.predictedTeamAScore,
         predictScoreB: p.predictedTeamBScore,
+        penaltyWinner: p.penaltyWinner || null,
         pointsEarned: p.pointsEarned !== undefined ? p.pointsEarned : null,
         status: (matchObj && matchObj.status) ? matchObj.status : (p.status || "pending"),
         match: matchDetails
@@ -50,7 +51,7 @@ export const predictionService = {
     return preds.find(p => p.matchId === matchId) || null;
   },
 
-  submitPrediction: async (userId, matchId, predictScoreA, predictScoreB) => {
+  submitPrediction: async (userId, matchId, predictScoreA, predictScoreB, penaltyWinner = null) => {
     const scoreA = parseInt(predictScoreA, 10);
     const scoreB = parseInt(predictScoreB, 10);
 
@@ -63,7 +64,8 @@ export const predictionService = {
       const apiResponse = await submitPredictionAPI({
         matchId,
         predictedTeamAScore: scoreA,
-        predictedTeamBScore: scoreB
+        predictedTeamBScore: scoreB,
+        ...(scoreA === scoreB && penaltyWinner ? { penaltyWinner } : {})
       });
       apiPrediction = apiResponse.prediction || {};
     } catch (err) {
@@ -76,6 +78,7 @@ export const predictionService = {
       matchId,
       predictScoreA: scoreA,
       predictScoreB: scoreB,
+      penaltyWinner: apiPrediction.penaltyWinner || penaltyWinner,
       pointsEarned: apiPrediction.pointsEarned !== undefined ? apiPrediction.pointsEarned : null,
       status: apiPrediction.status || "pending"
     };

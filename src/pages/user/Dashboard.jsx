@@ -50,10 +50,10 @@ const Dashboard = () => {
   }, [user?.id]);
 
   // Handle score submission
-  const handlePredictionSubmit = async (scoreA, scoreB) => {
+  const handlePredictionSubmit = async (scoreA, scoreB, penaltyWinner = null) => {
     if (!user || !selectedMatch) return;
     try {
-      await predictionService.submitPrediction(user.id, selectedMatch.id, scoreA, scoreB);
+      await predictionService.submitPrediction(user.id, selectedMatch.id, scoreA, scoreB, penaltyWinner);
       triggerToast("Prediction saved! Good luck! ⚽", "success");
       setIsPredictModalOpen(false);
       // Reload predictions state
